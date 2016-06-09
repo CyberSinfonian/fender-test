@@ -1,9 +1,13 @@
 ---
-- name: Creates a new single micro server in EC2
+- name: Creates a new single micro server in EC2 using Elasticsearch AMI
   ec2:
-      key_name: {{ key_name }}
-      instance_type: t2.micro
-      image:
-      wait: yes
-      group: elasticsearch
-      count: {{ instance_count }}
+    key_name: {{ key_name }}
+    instance_type: t2.micro
+    image: ami-b4ec0ed4
+    wait: yes
+    group: elasticsearch
+    count: {{ instance_count }}
+    group_id: sg-f7855691
+    aws_access_key: {{ aws_access_key }}
+    aws_secret_key: {{ aws_secret_key }}
+    vpc_submet_id: subnet-7a0a1f0e
