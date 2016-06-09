@@ -1,0 +1,9 @@
+---
+- name: Creates a new single micro server in EC2
+  ec2:
+      key_name: {{ key_name }}
+      instance_type: t2.micro
+      image:
+      wait: yes
+      group: elasticsearch
+      count: {{ instance_count }}
