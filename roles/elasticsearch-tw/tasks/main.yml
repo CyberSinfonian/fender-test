@@ -1,0 +1,21 @@
+---
+- name: Download Elasticsearch onto target machines
+  get_url: url="https://download.elastic.co/elasticsearch/release/org/elasticsearch/distribution/deb/elasticsearch/2.3.3/elasticsearch-2.3.3.deb" dest="/tmp/elasticsearch-2.3.3.deb" validate_certs=no
+  tags:
+    - elasticsearch
+    - download
+
+- name: Install newly-downloaded .deb distribution of Elasticsearch
+  command: "dpkg -i /tmp/elasticsearch-2.3.3.deb"
+  sudo: yes
+  tags:
+    - elasticsearch
+    - install
+
+- name: Add configuration file to system
+  template: src=roles/elasticsearch/templates/elasticsearch.yml dest=/etc/elasticsearch/elasticsearch.yml hostname={{ item.ec2_public_dns_name }}
+  with_items: ec2.instances
+  sudo: yes
+  tags:
+    - elasticsearch
+    - configure
