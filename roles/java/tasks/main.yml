@@ -4,8 +4,20 @@
   tags:
     - java
 
-- name: Extract to /usr/bin/jdk1.8.0_91
-  unarchive: src=/tmp/jdk-8u91-linux-x64.tar.gz dest=/usr/bin copy=no
+- name: Create destination directory for Java
+  file: path=/usr/lib/java state=directory
+  sudo: yes
+  tags:
+    - java
+
+- name: Extract to /usr/lib/java/jdk1.8.0_91
+  unarchive: src=/tmp/jdk-8u91-linux-x64.tar.gz dest=/usr/lib/java copy=no
+  sudo: yes
+  tags:
+    - java
+
+- name: Create symlink to latest version of Java
+  command: "ln -s /usr/lib/java/jdk1.8.0_91 /usr/lib/java/default"
   sudo: yes
   tags:
     - java

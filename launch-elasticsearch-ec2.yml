@@ -11,7 +11,7 @@
          image: ami-9abea4fb
          group_id: sg-e6e72183
          wait: true
-         exact_count: 1
+         count: 1
          count_tag:
             Name: elasticsearch
          instance_tags:
