@@ -3,7 +3,7 @@
   connection: local
   gather_facts: False
   tasks:
-    - name: Provision a set of instances
+    - name: Provision a master Elasticsearch instance
       ec2:
          key_name: knife_access
          instance_type: t2.micro
@@ -13,15 +13,22 @@
          wait: true
          count: 1
          count_tag:
-            Name: elasticsearch
+            Name: elasticsearch-master
          instance_tags:
             Name: elasticsearch
+            estype: master
       register: ec2
       tags:
         - ec2-launch
 
-    - name: Add all instance public IPs to host group
+    - name: Add instance public IPs to host group
       add_host: hostname={{ item.public_ip }} groups=ec2hosts
+      with_items: ec2.instances
+      tags:
+        - ec2-launch
+
+    - name: Add instance public IPs to master group
+      add_host: hostname={{ item.public_ip }} groups=elasticsearch_master
       with_items: ec2.instances
       tags:
         - ec2-launch
