@@ -4,8 +4,19 @@
   tags:
     - elasticsearch
 
+- name: Create file structure for Elasticsearch
+  file: path=/usr/lib/elasticsearch status=directory
+  tags:
+    - elasticsearch
+
 - name: Extract to the /bin directory
-  unarchive: src="/tmp/elasticsearch-2.3.3.tar.gz" dest="/usr/bin" copy=no
+  unarchive: src="/tmp/elasticsearch-2.3.3.tar.gz" dest="/usr/lib/elasticsearch" copy=no
+  sudo: yes
+  tags:
+    - elasticsearch
+
+- name: Create symlink to latest Elasticsearch install
+  command: "ln -s /usr/lib/elasticsearch/elasticsearch-2.3.3 /usr/lib/elasticsearch/default"
   sudo: yes
   tags:
     - elasticsearch
