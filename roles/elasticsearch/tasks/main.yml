@@ -1,0 +1,11 @@
+---
+- name: Download Elasticsearch onto target machines
+  get_url: url="https://download.elastic.co/elasticsearch/release/org/elasticsearch/distribution/tar/elasticsearch/2.3.3/elasticsearch-2.3.3.tar.gz" dest="/tmp/elasticsearch-2.3.3.tar.gz" validate_certs=no
+  tags:
+    - elasticsearch
+
+- name: Extract to the /bin directory
+  unarchive: src="/tmp/elasticsearch-2.3.3.tar.gz" dest="/usr/bin" copy=no
+  sudo: yes
+  tags:
+    - elasticsearch
