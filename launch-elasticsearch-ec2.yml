@@ -111,4 +111,3 @@
     es_plugins:
       - plugin: elasticsearch/license
         version: latest
-  with_items: ec2.instances
