@@ -1,4 +1,11 @@
 ---
+# Create the Elasticsearch security group
+- hosts: localhost
+  connection: local
+  gather_facts: False
+  roles:
+    - ec2
+
 # Create a single master Elasticsearch instance
 - hosts: localhost
   connection: local
@@ -6,11 +13,11 @@
   tasks:
     - name: Provision a master Elasticsearch instance
       ec2:
-         key_name: knife_access
-         instance_type: t2.micro
+         key_name: fender-dev
+         instance_type: t2.small
          region: us-west-2
          image: ami-9abea4fb
-         group_id: sg-e6e72183
+         group: elasticsearch
          wait: true
          exact_count: 1
          count_tag:
@@ -35,7 +42,7 @@
         - ec2-launch
 
     - name: Wait for SSH
-      wait_for: host={{ item.public_dns_name }} port=22 delay=20 timeout=320 state=started
+      wait_for: host={{ item.public_dns_name }} port=22 delay=10 timeout=320 state=started
       with_items: ec2.instances
       tags:
         - ec2-launch
@@ -47,11 +54,11 @@
   tasks:
     - name: Provision two slave Elasticsearch instances
       ec2:
-         key_name: knife_access
-         instance_type: t2.micro
+         key_name: fender-dev
+         instance_type: t2.small
          region: us-west-2
          image: ami-9abea4fb
-         group_id: sg-e6e72183
+         group: elasticsearch
          wait: true
          exact_count: 2
          count_tag:
@@ -76,7 +83,7 @@
         - ec2-launch
 
     - name: Wait for SSH
-      wait_for: host={{ item.public_dns_name }} port=22 delay=20 timeout=320 state=started
+      wait_for: host={{ item.public_dns_name }} port=22 delay=10 timeout=320 state=started
       with_items: ec2.instances
       tags:
         - ec2-launch
@@ -88,26 +95,23 @@
   roles:
     - java
 
-- hosts: elasticsearch_master
-  name: Install and configure Elasticsearch on the master server node
+- hosts: ec2hosts
+  name: Install Elasticsearch on all machines
   user: ubuntu
   gather_facts: true
   roles:
-    - { role: elasticsearch, es_instance_name: elasticsearch-1, es_heap_size: "1g",
-    es_config: {
-        cluster.name: "fender-test",
-        "discovery.zen.ping.multicast.enabled": false,
-        discovery.zen.ping.unicast.hosts: "elasticsearch-1, elasticsearch-2, elasticsearch-3",
-        node.data: false,
-        node.master: true,
-        bootstrap.mlockall: false,
-        discovery.zen.ping.multicast.enabled: false }
-    }
-  vars:
-    es_scripts: false
-    es_templates: false
-    es_version_lock: false
-    ansible_user: ansible
-    es_plugins:
-      - plugin: elasticsearch/license
-        version: latest
+    - elasticsearch-tw
+
+- hosts: elasticsearch_master
+  name: Configure Elasticsearch on the master server node
+  user: ubuntu
+  gather_facts: true
+  roles:
+    - elasticsearch-master 
+
+- hosts: elasticsearch_slave
+  name: Configure Elasticsearch on the slave server nodes
+  user: ubuntu
+  gather_facts: true
+  roles:
+    - elasticsearch-slave

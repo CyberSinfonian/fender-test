@@ -1,13 +1,29 @@
 ---
-- name: Creates a new single micro server in EC2 using Elasticsearch AMI
-  ec2:
-    key_name: {{ key_name }}
-    instance_type: t2.micro
-    image: ami-b4ec0ed4
-    wait: yes
-    group: elasticsearch
-    count: {{ instance_count }}
-    group_id: sg-f7855691
-    aws_access_key: {{ aws_access_key }}
-    aws_secret_key: {{ aws_secret_key }}
-    vpc_submet_id: subnet-7a0a1f0e
+- name: Create Elasticsearch EC2 security group
+  ec2_group:
+    name: elasticsearch
+    description: A security group for Elasticsearch servers
+    vpc_id: vpc-6c41a209
+    region: us-west-2
+    state: present
+    rules:
+      - proto: tcp
+        from_port: 80
+        to_port: 80
+        cidr_ip: 0.0.0.0/0
+      - proto: tcp
+        from_port: 443
+        to_port: 443
+        cidr_ip: 0.0.0.0/0
+      - proto: tcp
+        from_port: 22
+        to_port: 22
+        cidr_ip: 0.0.0.0/0
+      - proto: tcp
+        from_port: 9200
+        to_port: 9200
+        group_name: elasticsearch
+      - proto: tcp
+        from_port: 9300
+        to_port: 9300
+        group_name: elasticsearch

@@ -1,0 +1,6 @@
+---
+- name: Install the Kopf plugin
+  command: "/usr/share/elasticsearch/bin/plugin install lmenezes/elasticsearch-kopf"
+  sudo: yes
+  tags:
+    - kopf

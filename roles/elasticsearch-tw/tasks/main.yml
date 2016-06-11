@@ -11,11 +11,3 @@
   tags:
     - elasticsearch
     - install
-
-- name: Add configuration file to system
-  template: src=roles/elasticsearch/templates/elasticsearch.yml dest=/etc/elasticsearch/elasticsearch.yml hostname={{ item.ec2_public_dns_name }}
-  with_items: ec2.instances
-  sudo: yes
-  tags:
-    - elasticsearch
-    - configure

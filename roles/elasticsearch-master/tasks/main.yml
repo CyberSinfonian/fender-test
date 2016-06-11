@@ -1,0 +1,8 @@
+---
+- name: Apply template for master node to system
+  template: src=elasticsearch.yml.master.j2 dest=/etc/elasticsearch/elasticsearch.yml
+  sudo: yes
+
+- name: Start the Elasticsearch service
+  service: name=elasticsearch state=started
+  sudo: yes
