@@ -43,15 +43,31 @@ ec2_secret_key: "--REMOVED--"
 If going the route of the vars_file, please ensure to encrypt the keys with ansible-vault
 for security purposes
 
-## Dynamic Hosts Setup
-Since this is a system for working with cloud instances, a dynamic hosts
-list is more useful than a static one normally used with Ansible. The easiest
-way to do this is with **ec2.py**, an external inventory script meant for 
-working with EC2 environments. The easiest way to use the script is in-line
-using Ansible's -i command line option after making the script executable. 
+## Variable Configuration
+The variables used in the creation of the EC2 instances and in the execution of the
+installation and configuration roles can be found in the **hosts** file.  The defaults
+are set to use a basic Amazon Ubuntu 14.04 server AMI, a t2.micro instance type, the
+us-west-2 Oregon region, the subnet group us-west-2a, and assign the security group
+'elasticsearch'.  There is also a username field that is used with the access and
+installation of the new remote server instances.  This should only be changed if
+the AMI is changed to a different system that requires a different username for 
+remote access.  Otherwise, these basic settings should be used as the default.
 
-Alternatively, the file **ec2.py** can be copied to **/etc/ansible/hosts** and
-made executable, and the file **ec2.ini** can be copied to 
-**/etc/ansible/ec2.ini**, in which case Ansible can be run normally. However,
-I personally have not tested this method as thoroughly, so I strongly
-recommend using the command line option
+The servers are created at two points.  One server is created first as the master server,
+and is given a tag specifying that it is a master, then two slave servers are created with
+the appropriate tag.
+
+## Execution
+In order for execution to be successful, the values for AWS_ACCESS_KEY_ID and
+AWS_SECRET_ACCESS_KEY must be set, using either of the methods mentioned above.
+I have thoroughly tested the export of those values as system variables, so that is
+the method I recommend for script execution.  Here is the command to run to launch the
+instances:
+```ssh
+$ ansible-playbook -v -i hosts launch-elasticsearch-ec2.yml
+```
+I find using the -v flag for minimum verbosity to be useful for general execution
+purposes to track how the systems are working and to confirm that all of the systems
+are coming up properly.  Optionally, increasing the verbosity up to as high as -vvvv
+greatly increases the amount of logging and visibility into the scripts and system
+creation.

@@ -19,6 +19,7 @@
          image: {{ image }}
          group: {{ group }}
          wait: {{ wait }}
+         vpc_subnet_id: {{ vpc_subnet_id }}
          exact_count: 1
          count_tag:
             estype: master
