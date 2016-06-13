@@ -90,35 +90,35 @@
 
 - hosts: ec2hosts
   name: Install Java JDK 1.8.0_91
-  user: ec2-user
+  user: ubuntu
   gather_facts: true
   roles:
     - java
 
 - hosts: ec2hosts
   name: Install Elasticsearch on all machines
-  user: ec2-user
+  user: ubuntu
   gather_facts: true
   roles:
     - elasticsearch-tw
 
 - hosts: ec2hosts
   name: Install Kopf on all machines
-  user: ec2-user
+  user: ubuntu
   gather_facts: true
   roles:
     - kopf
 
 - hosts: elasticsearch_master
   name: Configure Elasticsearch on the master server node
-  user: ec2-user
+  user: ubuntu
   gather_facts: true
   roles:
     - elasticsearch-master 
 
 - hosts: elasticsearch_slave
   name: Configure Elasticsearch on the slave server nodes
-  user: ec2-user
+  user: ubuntu
   gather_facts: true
   roles:
     - elasticsearch-slave
