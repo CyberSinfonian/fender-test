@@ -1,1 +1,12 @@
+[fender]
 localhost
+
+
+[fender:vars]
+key_name=fender-dev
+instance_type=t2.micro
+region=us-west-2
+image=ami-9abea4fb
+group=elasticsearch
+wait=true
+username=ubuntu

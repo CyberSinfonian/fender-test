@@ -1,24 +1,24 @@
 ---
 # Create the Elasticsearch security group
-- hosts: localhost
+- hosts: fender
   connection: local
   gather_facts: False
   roles:
     - ec2
 
 # Create a single master Elasticsearch instance
-- hosts: localhost
+- hosts: fender
   connection: local
   gather_facts: False
   tasks:
     - name: Provision a master Elasticsearch instance
       ec2:
-         key_name: fender-dev
-         instance_type: t2.micro
-         region: us-west-2
-         image: ami-9abea4fb
-         group: elasticsearch
-         wait: true
+         key_name: {{ key_name }}
+         instance_type: {{ instance_type }}
+         region: {{ region }}
+         image: {{ image }}
+         group: {{ group }}
+         wait: {{ wait }}
          exact_count: 1
          count_tag:
             estype: master
@@ -48,18 +48,18 @@
         - ec2-launch
 
 # Create two slave Elasticsearch instances
-- hosts: localhost
+- hosts: fender
   connection: local
   gather_facts: False
   tasks:
     - name: Provision two slave Elasticsearch instances
       ec2:
-         key_name: fender-dev
-         instance_type: t2.micro
-         region: us-west-2
-         image: ami-9abea4fb
-         group: elasticsearch
-         wait: true
+         key_name: {{ key_name }}
+         instance_type: {{ instance_type }}
+         region: {{ region }}
+         image: {{ image }}
+         group: {{ group }}
+         wait: {{ wait }}
          exact_count: 2
          count_tag:
             estype: slave
@@ -90,35 +90,35 @@
 
 - hosts: ec2hosts
   name: Install Java JDK 1.8.0_91
-  user: ubuntu
+  user: {{ username }}
   gather_facts: true
   roles:
     - java
 
 - hosts: ec2hosts
   name: Install Elasticsearch on all machines
-  user: ubuntu
+  user: {{ username }}
   gather_facts: true
   roles:
     - elasticsearch-tw
 
 - hosts: ec2hosts
   name: Install Kopf on all machines
-  user: ubuntu
+  user: {{ username }}
   gather_facts: true
   roles:
     - kopf
 
 - hosts: elasticsearch_master
   name: Configure Elasticsearch on the master server node
-  user: ubuntu
+  user: {{ username }}
   gather_facts: true
   roles:
     - elasticsearch-master 
 
 - hosts: elasticsearch_slave
   name: Configure Elasticsearch on the slave server nodes
-  user: ubuntu
+  user: {{ username }}
   gather_facts: true
   roles:
     - elasticsearch-slave
