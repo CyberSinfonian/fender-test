@@ -9,5 +9,4 @@ region=us-west-2
 image=ami-9abea4fb
 group=elasticsearch
 wait=true
-vpc_subnet_id=subnet-85cc39e0
-username=ubuntu
+vpc_subnet_id=Fender-VPC

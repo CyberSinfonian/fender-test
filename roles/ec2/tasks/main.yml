@@ -1,9 +1,29 @@
 ---
+#- name: Create EC2 VPC for use
+#  ec2_vpc:
+#    state: present
+#    region: "{{ region }}"
+#    cidr_block: "{{ master_cidr_block }}"
+#    resource_tags: { "Environment" : "Development", "Name" : "fender" }
+#    internet_gateway: "{{ internet_gateway }}"
+#    subnets:
+#      - cidr: "{{ subnet_cidr_block }}"
+#      - az: "{{ a_zone }}"
+#      - resource_tags: { "Tier" : "Elasticsearch" }
+#    route_tables:
+#      - subnets:
+#        - "{{ subnet_cidr_block }}"
+#        routes:
+#          - dest: 0.0.0.0/0
+#            gw: igw
+#    wait: yes
+#  register: vpc
+
 - name: Create Elasticsearch EC2 security group
   ec2_group:
     name: elasticsearch
     description: A security group for Elasticsearch servers
-    vpc_id: vpc-6c41a209
+#    vpc_id: "{{ item.id }}"
     region: us-west-2
     state: present
     rules:
@@ -27,3 +47,4 @@
         from_port: 9300
         to_port: 9300
         group_name: elasticsearch
+#  with_items: vpc.subnets

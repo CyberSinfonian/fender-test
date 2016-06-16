@@ -1,6 +1,12 @@
 ---
 # file: /roles/ec2/vars/main
-key_name: $KEY_NAME
-count: 3
-aws_access_key: $AWS_ACCESS_KEY
-aws_secret_key: $AWS_SECRET_KEY
+
+## These vars are intended for future use and should not be used at this time.
+# aws_access_key: $AWS_ACCESS_KEY
+# aws_secret_key: $AWS_SECRET_KEY
+
+region: us-west-2
+a_zone: us-west-2a
+master_cidr_block: 14.28.0.0/16
+subnet_cidr_block: 14.28.3.0/24
+internet_gateway: yes

@@ -13,13 +13,13 @@
   tasks:
     - name: Provision a master Elasticsearch instance
       ec2:
-         key_name: {{ key_name }}
-         instance_type: {{ instance_type }}
-         region: {{ region }}
-         image: {{ image }}
-         group: {{ group }}
-         wait: {{ wait }}
-         vpc_subnet_id: {{ vpc_subnet_id }}
+         key_name: "{{ key_name }}"
+         instance_type: "{{ instance_type }}"
+         region: "{{ region }}"
+         image: "{{ image }}"
+         group: "{{ group }}"
+         wait: "{{ wait }}"
+#         vpc_subnet_id: "{{ vpc_subnet_id }}"
          exact_count: 1
          count_tag:
             estype: master
@@ -31,19 +31,19 @@
         - ec2-launch
 
     - name: Add instance public IPs to host group
-      add_host: hostname={{ item.public_ip }} groups=ec2hosts
+      add_host: hostname="{{ item.public_ip }}" groups=ec2hosts
       with_items: ec2.instances
       tags:
         - ec2-launch
 
     - name: Add instance public IPs to master group
-      add_host: hostname={{ item.public_ip }} groups=elasticsearch_master
+      add_host: hostname="{{ item.public_ip }}" groups=elasticsearch_master
       with_items: ec2.instances
       tags:
         - ec2-launch
 
     - name: Wait for SSH
-      wait_for: host={{ item.public_dns_name }} port=22 delay=10 timeout=320 state=started
+      wait_for: host="{{ item.public_dns_name }}" port=22 delay=10 timeout=320 state=started
       with_items: ec2.instances
       tags:
         - ec2-launch
@@ -55,12 +55,12 @@
   tasks:
     - name: Provision two slave Elasticsearch instances
       ec2:
-         key_name: {{ key_name }}
-         instance_type: {{ instance_type }}
-         region: {{ region }}
-         image: {{ image }}
-         group: {{ group }}
-         wait: {{ wait }}
+         key_name: "{{ key_name }}"
+         instance_type: "{{ instance_type }}"
+         region: "{{ region }}"
+         image: "{{ image }}"
+         group: "{{ group }}"
+         wait: "{{ wait }}"
          exact_count: 2
          count_tag:
             estype: slave
@@ -72,54 +72,54 @@
         - ec2-launch
 
     - name: Add instance public IPs to host group
-      add_host: hostname={{ item.public_ip }} groups=ec2hosts
+      add_host: hostname="{{ item.public_ip }}" groups=ec2hosts
       with_items: ec2.instances
       tags:
         - ec2-launch
 
     - name: Add instance public IPs to slave group
-      add_host: hostname={{ item.public_ip }} groups=elasticsearch_slave
+      add_host: hostname="{{ item.public_ip }}" groups=elasticsearch_slave
       with_items: ec2.instances
       tags:
         - ec2-launch
 
     - name: Wait for SSH
-      wait_for: host={{ item.public_dns_name }} port=22 delay=10 timeout=320 state=started
+      wait_for: host="{{ item.public_dns_name }}" port=22 delay=10 timeout=320 state=started
       with_items: ec2.instances
       tags:
         - ec2-launch
 
 - hosts: ec2hosts
   name: Install Java JDK 1.8.0_91
-  user: {{ username }}
+  user: ubuntu
   gather_facts: true
   roles:
     - java
 
 - hosts: ec2hosts
   name: Install Elasticsearch on all machines
-  user: {{ username }}
+  user: ubuntu
   gather_facts: true
   roles:
     - elasticsearch-tw
 
 - hosts: ec2hosts
   name: Install Kopf on all machines
-  user: {{ username }}
+  user: ubuntu
   gather_facts: true
   roles:
     - kopf
 
 - hosts: elasticsearch_master
   name: Configure Elasticsearch on the master server node
-  user: {{ username }}
+  user: ubuntu
   gather_facts: true
   roles:
     - elasticsearch-master 
 
 - hosts: elasticsearch_slave
   name: Configure Elasticsearch on the slave server nodes
-  user: {{ username }}
+  user: ubuntu
   gather_facts: true
   roles:
     - elasticsearch-slave
