@@ -1,5 +1,6 @@
-# fender-test
-Programming test for Fender Digital interview process
+# elasticsearch-test
+Programming test for previous interview process.
+The work here is in a partially-functional state after running out of time to complete the programming test.
 
 ## System Requirements
 - Python >= 2.6
